@@ -44,7 +44,8 @@ class OrderController extends Controller
     {
         $request->validate([
             'order_type' => 'required|in:in_store,pickup_later',
-            'pickup_at' => 'nullable|date|after:now'
+            'pickup_at' => 'nullable|date|after:now',
+            'payment_method' => 'required|in:cash,transfer,qris',
         ]);
         $cart = session('cart', []);
         if (empty($cart)) return redirect()->route('orders.catalog');
@@ -57,6 +58,7 @@ class OrderController extends Controller
                 'pickup_at' => $request->order_type === 'pickup_later' ? $request->pickup_at : null,
                 'status' => $request->order_type === 'in_store' ? 'paid' : 'pending',
                 'payment_status' => $request->order_type === 'in_store' ? 'paid' : 'unpaid',
+                'payment_method' => $request->payment_method,
                 'subtotal' => 0,
                 'discount_total' => 0,
                 'grand_total' => 0,
@@ -112,15 +114,20 @@ class OrderController extends Controller
         return view('orders.receipt', compact('order'));
     }
 
-    public function markPaid(Order $order)
+    public function markPaid(Request $request, Order $order)
     {
         if (!in_array(auth()->user()->role, ['admin','cashier'], true)) abort(403);
         if ($order->payment_status !== 'paid') {
-            $order->update([
+            $method = $request->input('payment_method');
+            $update = [
                 'status' => 'paid',
                 'payment_status' => 'paid',
                 'paid_at' => now(),
-            ]);
+            ];
+            if ($method && in_array($method, ['cash','transfer','qris'], true)) {
+                $update['payment_method'] = $method;
+            }
+            $order->update($update);
         }
         return back()->with('success','Order ditandai sudah dibayar.');
     }

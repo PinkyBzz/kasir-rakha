@@ -1,14 +1,17 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="mb-4">
-  <h2 class="fw-bold mb-1"><i class="bi bi-bag-heart me-2"></i>Katalog Produk</h2>
-  <p class="text-muted">Pilih produk favorit Anda</p>
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h2 class="fw-bold mb-1"><i class="bi bi-bag-heart me-2"></i>Katalog Produk</h2>
+    <p class="text-muted mb-0">Pilih produk favorit Anda</p>
+  </div>
+  <a href="{{ route('cart.view') }}" class="btn btn-outline-secondary"><i class="bi bi-cart3 me-2"></i>Lihat Keranjang</a>
 </div>
 
-<div class="row row-cols-1 row-cols-md-4 g-4 mb-5">
+<div class="row row-cols-2 row-cols-md-4 g-3 mb-5">
   @foreach($products as $p)
-  <div class="col">
+  <div class="col reveal">
     <div class="card product-card h-100">
       <div style="position: relative; overflow: hidden; border-radius: 16px 16px 0 0;">
         <img src="{{ $p->image_path ? asset('storage/'.$p->image_path) : 'https://via.placeholder.com/300x200?text=No+Image' }}" class="card-img-top" alt="{{ $p->name }}">
@@ -19,16 +22,16 @@
         @endif
       </div>
       <div class="card-body d-flex flex-column">
-        <h6 class="card-title fw-bold mb-2">{{ $p->name }}</h6>
+        <h6 class="card-title fw-semibold mb-2">{{ $p->name }}</h6>
         <div class="mb-3">
-          <span class="fw-bold" style="font-size: 1.2rem; color: #11998e;">Rp {{ number_format($p->final_price,0,',','.') }}</span>
+          <span class="price">Rp {{ number_format($p->final_price,0,',','.') }}</span>
           @if($p->discount_type!='none')
             <small class="text-muted text-decoration-line-through ms-2">Rp {{ number_format($p->price,0,',','.') }}</small>
           @endif
         </div>
         <form method="POST" action="{{ route('cart.add', $p) }}" class="mt-auto">@csrf
           <div class="input-group">
-            <input type="number" name="qty" class="form-control" min="1" value="1" style="max-width: 80px;">
+            <input type="number" name="qty" class="form-control" min="1" value="1" style="max-width: 90px;">
             <button class="btn btn-primary flex-grow-1"><i class="bi bi-cart-plus me-1"></i>Tambah</button>
           </div>
         </form>
@@ -50,7 +53,7 @@
             <span class="badge bg-{{ $o->status==='paid'?'success':($o->status==='pending'?'warning':'secondary') }} ms-2 text-uppercase">{{ ucfirst($o->status) }}</span>
             <span class="ms-2 text-muted">Rp {{ number_format($o->grand_total,0,',','.') }}</span>
           </div>
-          <a class="btn btn-sm btn-outline-primary" href="{{ route('orders.receipt', $o) }}" target="_blank">
+          <a class="btn btn-sm btn-outline-secondary" href="{{ route('orders.receipt', $o) }}" target="_blank">
             <i class="bi bi-receipt me-1"></i>Lihat Struk
           </a>
         </div>

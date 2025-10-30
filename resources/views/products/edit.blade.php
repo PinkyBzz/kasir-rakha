@@ -1,8 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-<h3 class="mb-3">Edit Produk</h3>
-<form method="POST" action="{{ route('products.update', $product) }}" enctype="multipart/form-data">@csrf @method('PUT')
+<div class="card modern fade-in">
+  <div class="card-body p-4">
+    <h4 class="fw-bold mb-3"><i class="bi bi-pencil me-2"></i>Edit Produk</h4>
+    <form method="POST" action="{{ route('products.update', $product) }}" enctype="multipart/form-data">@csrf @method('PUT')
   <div class="row g-3">
     <div class="col-md-6">
       <label class="form-label">Nama</label>
@@ -49,8 +51,10 @@
     </div>
   </div>
   <div class="mt-3">
-    <button class="btn btn-success">Simpan</button>
-    <a href="{{ route('products.index') }}" class="btn btn-secondary">Batal</a>
+    <button class="btn btn-success px-4">Simpan</button>
+    <a href="{{ route('products.index') }}" class="btn btn-outline-secondary px-4">Batal</a>
   </div>
-</form>
+    </form>
+  </div>
+</div>
 @endsection

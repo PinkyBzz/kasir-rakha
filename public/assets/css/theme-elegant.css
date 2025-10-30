@@ -1,0 +1,67 @@
+/* Elegant, simple, neat theme overrides */
+:root{
+  --e-bg: #f7f7f8;
+  --e-surface: #ffffff;
+  --e-border: #eaecf0;
+  --e-text-1: #1f2328;
+  --e-text-2: #6b7280;
+  --e-primary-1: #2f2f2f; /* charcoal */
+  --e-primary-2: #494949; /* graphite */
+  --e-success-1: #059669; /* emerald */
+  --e-success-2: #34d399;
+  --e-warn-1: #b45309; /* warm amber */
+  --e-warn-2: #d97706;
+  --e-radius: 16px;
+  --e-shadow-sm: 0 4px 16px rgba(16,24,40,.08);
+  --e-shadow-md: 0 10px 30px rgba(16,24,40,.12);
+}
+
+body.elegant-theme{ background: var(--e-bg); color: var(--e-text-1); }
+
+/* Navbar */
+.navbar.compact{ background: linear-gradient(135deg, var(--e-primary-1), var(--e-primary-2)) !important; box-shadow: var(--e-shadow-sm); }
+.navbar.compact .navbar-brand{ background: linear-gradient(90deg,#f4efe3,#d9caa0); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.navbar.compact .nav-link.active{ color: #f4efe3 !important; }
+.navbar.compact .dropdown-menu{ border: 1px solid var(--e-border); border-radius: 14px; box-shadow: var(--e-shadow-sm); padding: .5rem; }
+.navbar.compact .dropdown-item{ border-radius: 10px; padding: .45rem .75rem; font-weight: 500; }
+.navbar.compact .dropdown-item:hover{ background: #f3f4f6; }
+.navbar.compact .dropdown-divider{ border-top-color: var(--e-border); }
+
+/* Cards */
+.card, .product-card, .stat-card{ border: 1px solid var(--e-border); border-radius: var(--e-radius); box-shadow: var(--e-shadow-sm); }
+.card:hover, .product-card:hover, .stat-card:hover{ box-shadow: var(--e-shadow-md); }
+.card .card-body{ padding: 1rem 1.25rem; }
+
+/* Tables */
+.table{ --bs-table-bg: var(--e-surface); font-size: .95rem; }
+.table thead{ background: #fafbfc; color: var(--e-text-1); }
+.table tbody tr:hover{ background: #fafafa; }
+
+/* Forms */
+.form-control, .form-select{ border-radius: 12px; border-color: var(--e-border); }
+.form-control:focus, .form-select:focus{ border-color: #cbd5e1; box-shadow: 0 0 0 .2rem rgba(15,23,42,.06); }
+
+/* Buttons */
+.btn-primary{ background: linear-gradient(135deg, var(--e-primary-1), var(--e-primary-2)); border: none; box-shadow: 0 8px 20px rgba(0,0,0,.16); }
+.btn-success{ background: linear-gradient(135deg, var(--e-success-1), var(--e-success-2)); border: none; }
+.btn-warning{ background: linear-gradient(135deg, var(--e-warn-1), var(--e-warn-2)); border: none; }
+.btn-outline-secondary{ border-color: var(--e-border); color: var(--e-text-1); }
+.btn-outline-secondary:hover{ background:#f3f4f6; }
+
+/* Badges */
+.badge{ border-radius: 10px; }
+
+/* Subtle separators */
+.section{ padding: .5rem 0 1rem; }
+.divider{ height:1px; background: var(--e-border); margin: .75rem 0; }
+
+/* Reveal */
+.reveal{ opacity: 0; transform: translateY(10px); transition: opacity .35s ease, transform .35s ease; }
+.reveal.in{ opacity:1; transform:none; }
+
+/* Minimal product card */
+.product-card img{ border-bottom: 1px solid var(--e-border); max-height: 160px; object-fit: cover; }
+.product-card .price{ color: var(--e-success-1); font-weight: 700; }
+
+/* Footer */
+.footer-elegant{ color: var(--e-text-2); font-size: .85rem; border-top: 1px solid var(--e-border); }

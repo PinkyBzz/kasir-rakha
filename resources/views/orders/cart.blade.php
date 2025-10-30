@@ -21,7 +21,7 @@
   <div class="card fade-in mb-4">
     <div class="card-body p-0">
       <div class="table-responsive">
-        <table class="table table-hover mb-0">
+        <table class="table table-hover table-sm mb-0 align-middle">
           <thead>
             <tr>
               <th class="ps-4">Produk</th>
@@ -52,17 +52,17 @@
                   </div>
                 </td>
                 <td class="text-center align-middle">
-                  <span class="badge bg-primary" style="font-size: 1rem; padding: 0.5rem 1rem;">{{ $qty }}</span>
+                  <span class="badge bg-dark" style="font-size: .9rem; padding: .4rem .8rem;">{{ $qty }}</span>
                 </td>
-                <td class="text-end align-middle fw-semibold text-success">Rp {{ number_format($unit,0,',','.') }}</td>
-                <td class="text-end pe-4 align-middle fw-bold" style="font-size: 1.1rem;">Rp {{ number_format($total,0,',','.') }}</td>
+                <td class="text-end align-middle fw-semibold">Rp {{ number_format($unit,0,',','.') }}</td>
+                <td class="text-end pe-4 align-middle fw-bold" style="font-size: 1.05rem; color:#0f766e;">Rp {{ number_format($total,0,',','.') }}</td>
               </tr>
             @endforeach
           </tbody>
           <tfoot style="background: linear-gradient(180deg, #f8f9fa 0%, white 100%);">
             <tr>
               <td colspan="3" class="text-end fs-5 fw-bold ps-4" style="padding: 1.5rem;">Grand Total</td>
-              <td class="text-end pe-4 fs-4 fw-bold" style="padding: 1.5rem; color: #11998e;">Rp {{ number_format($grand,0,',','.') }}</td>
+              <td class="text-end pe-4 fs-4 fw-bold" style="padding: 1.5rem; color: #0f766e;">Rp {{ number_format($grand,0,',','.') }}</td>
             </tr>
           </tfoot>
         </table>
@@ -71,9 +71,7 @@
   </div>
   
   <div class="text-end">
-    <a class="btn btn-success btn-lg px-5 py-3" href="{{ route('checkout.form') }}">
-      <i class="bi bi-credit-card me-2"></i>Lanjut ke Checkout
-    </a>
+    <a class="btn btn-success px-4 py-2" href="{{ route('checkout.form') }}"><i class="bi bi-credit-card me-2"></i>Lanjut ke Checkout</a>
   </div>
 @endif
 @endsection

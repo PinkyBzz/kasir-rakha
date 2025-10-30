@@ -1,19 +1,22 @@
 @extends('layouts.app')
 
 @section('content')
-<h3 class="mb-3">Katalog Produk</h3>
-<div class="row row-cols-1 row-cols-md-4 g-3">
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="mb-0 fw-bold">Katalog Produk</h3>
+  <a href="{{ route('cart.view') }}" class="btn btn-outline-secondary"><i class="bi bi-cart3 me-2"></i>Lihat Keranjang</a>
+</div>
+<div class="row row-cols-2 row-cols-md-4 g-3">
   @foreach($products as $p)
-  <div class="col">
+  <div class="col reveal">
     <div class="card product-card h-100">
       <img src="{{ $p->image_path ? asset('storage/'.$p->image_path) : 'https://via.placeholder.com/300x200?text=No+Image' }}" class="card-img-top" alt="{{ $p->name }}">
       <div class="card-body d-flex flex-column">
-        <h6 class="card-title">{{ $p->name }}</h6>
-        <div class="mb-2">Rp {{ number_format($p->final_price,0,',','.') }} <small class="text-muted">@if($p->discount_type!='none')<del>Rp {{ number_format($p->price,0,',','.') }}</del>@endif</small></div>
+        <h6 class="card-title fw-semibold">{{ $p->name }}</h6>
+        <div class="mb-2"><span class="price">Rp {{ number_format($p->final_price,0,',','.') }}</span> <small class="text-muted">@if($p->discount_type!='none')<del>Rp {{ number_format($p->price,0,',','.') }}</del>@endif</small></div>
         <form method="POST" action="{{ route('cart.add', $p) }}" class="mt-auto">@csrf
           <div class="input-group">
-            <input type="number" name="qty" class="form-control" min="1" value="1">
-            <button class="btn btn-primary">Tambah</button>
+            <input type="number" name="qty" class="form-control" min="1" value="1" style="max-width: 90px;">
+            <button class="btn btn-primary"><i class="bi bi-plus-circle me-1"></i>Tambah</button>
           </div>
         </form>
       </div>

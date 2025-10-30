@@ -54,9 +54,14 @@
             <a class="btn btn-sm btn-outline-secondary" href="{{ route('orders.receipt', $o) }}" target="_blank">
               <i class="bi bi-receipt me-1"></i>Struk
             </a>
-            <form method="POST" action="{{ route('orders.markPaid', $o) }}">@csrf
+            <form method="POST" action="{{ route('orders.markPaid', $o) }}" class="d-flex align-items-center gap-2">@csrf
+              <select name="payment_method" class="form-select form-select-sm" style="width:auto;">
+                <option value="cash" {{ $o->payment_method==='cash'?'selected':'' }}>Cash</option>
+                <option value="transfer" {{ $o->payment_method==='transfer'?'selected':'' }}>Transfer</option>
+                <option value="qris" {{ $o->payment_method==='qris'?'selected':'' }}>QRIS</option>
+              </select>
               <button class="btn btn-sm btn-success">
-                <i class="bi bi-check-circle me-1"></i>Tandai Sudah Dibayar
+                <i class="bi bi-check-circle me-1"></i>Sudah Dibayar
               </button>
             </form>
           </div>

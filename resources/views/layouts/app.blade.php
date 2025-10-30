@@ -3,35 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $title ?? 'Kasir Pro' }}</title>
+    <title>{{ $title ?? 'Kasir 40' }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-            --warning-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --dark-gradient: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            /* Elegant neutral palette: charcoal, emerald, amber */
+            --primary-gradient: linear-gradient(135deg, #2f2f2f 0%, #494949 100%);
+            --success-gradient: linear-gradient(135deg, #059669 0%, #34d399 100%);
+            --warning-gradient: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            --dark-gradient: linear-gradient(135deg, #1c1c1c 0%, #2b2b2b 100%);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             padding-top: 80px; 
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
             min-height: 100vh;
         }
         .navbar-brand { 
             font-weight: 700; 
             font-size: 1.5rem;
-            background: linear-gradient(90deg, #fff, #a8edea);
+            background: linear-gradient(90deg, #f8f5ec, #d6c39b);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
         .navbar {
             background: var(--primary-gradient) !important;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 6px 24px rgba(0,0,0,0.12);
             backdrop-filter: blur(10px);
         }
         .nav-link {
@@ -41,21 +42,28 @@
         }
         .nav-link:hover {
             transform: translateY(-2px);
-            color: #a8edea !important;
+            color: #d9caa0 !important;
         }
         .nav-link::after {
             content: '';
             position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: 0;
             left: 50%;
-            background: #a8edea;
-            transition: all 0.3s ease;
-            transform: translateX(-50%);
+            bottom: 0;
+            height: 2px;
+            width: 80%;
+            background: #d9caa0;
+            transform: translateX(-50%) scaleX(0);
+            transform-origin: center;
+            transition: transform 0.25s ease, opacity 0.25s ease;
+            opacity: 0;
         }
         .nav-link:hover::after {
-            width: 80%;
+            transform: translateX(-50%) scaleX(1);
+            opacity: 1;
+        }
+        .nav-link.active::after {
+            transform: translateX(-50%) scaleX(1);
+            opacity: 1;
         }
         .product-card {
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -213,53 +221,98 @@
             animation: fadeInUp 0.8s ease-out;
         }
     </style>
+    <link href="/assets/css/modern-compact.css" rel="stylesheet">
+    <link href="/assets/css/theme-elegant.css" rel="stylesheet">
 </head>
-<body>
-<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+<body class="compact-theme elegant-theme">
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top compact">
   <div class="container">
     <a class="navbar-brand" href="{{ route('dashboard.redirect') }}">
-        <i class="bi bi-shop me-2"></i>Kasir Pro
+    <i class="bi bi-shop me-2"></i>Kasir 40
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample" aria-controls="navbarsExample" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="navbarsExample">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        @auth
-            @if(auth()->user()->role === 'admin')
-                <li class="nav-item"><a class="nav-link" href="{{ route('dashboard.admin') }}"><i class="bi bi-speedometer2 me-1"></i>Dashboard</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('products.index') }}"><i class="bi bi-box-seam me-1"></i>Produk</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('reports.index') }}"><i class="bi bi-file-earmark-bar-graph me-1"></i>Laporan</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('expenses.index') }}"><i class="bi bi-cash-coin me-1"></i>Pengeluaran</a></li>
-            @elseif(auth()->user()->role === 'cashier')
-                <li class="nav-item"><a class="nav-link" href="{{ route('dashboard.cashier') }}"><i class="bi bi-speedometer2 me-1"></i>Dashboard</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('orders.catalog') }}"><i class="bi bi-grid me-1"></i>Katalog</a></li>
-            @else
-                <li class="nav-item"><a class="nav-link" href="{{ route('dashboard.user') }}"><i class="bi bi-speedometer2 me-1"></i>Dashboard</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('shop.catalog') }}"><i class="bi bi-bag me-1"></i>Belanja</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('cart.view') }}"><i class="bi bi-cart3 me-1"></i>Keranjang</a></li>
-            @endif
-        @endauth
-      </ul>
-      <ul class="navbar-nav ms-auto">
-        @guest
-            <li class="nav-item"><a class="nav-link" href="{{ route('login') }}"><i class="bi bi-box-arrow-in-right me-1"></i>Login</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('register') }}"><i class="bi bi-person-plus me-1"></i>Register</a></li>
-        @else
-            <li class="nav-item"><span class="navbar-text me-3"><i class="bi bi-person-circle me-1"></i>{{ auth()->user()->name }}</span></li>
-            <li class="nav-item">
-                <form method="POST" action="{{ route('logout') }}" class="d-inline">@csrf
-                    <button class="btn btn-sm btn-outline-light rounded-pill"><i class="bi bi-box-arrow-right me-1"></i>Logout</button>
-                </form>
-            </li>
-        @endguest
-      </ul>
-    </div>
+        <div class="collapse navbar-collapse" id="navbarsExample">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                @auth
+                        @if(auth()->user()->role === 'admin')
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('dashboard.admin') ? 'active' : '' }}" href="{{ route('dashboard.admin') }}">
+                                        <i class="bi bi-speedometer2 me-1"></i>Dashboard
+                                    </a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle {{ request()->routeIs('products.*') || request()->routeIs('reports.*') || request()->routeIs('expenses.*') ? 'active' : '' }}" href="#" id="kelolaDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-sliders me-1"></i>Kelola
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="kelolaDropdown">
+                                        <li><a class="dropdown-item {{ request()->routeIs('products.*') ? 'active' : '' }}" href="{{ route('products.index') }}"><i class="bi bi-box-seam me-2"></i>Produk</a></li>
+                                        <li><a class="dropdown-item {{ request()->routeIs('expenses.*') ? 'active' : '' }}" href="{{ route('expenses.index') }}"><i class="bi bi-cash-coin me-2"></i>Pengeluaran</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item {{ request()->routeIs('reports.*') ? 'active' : '' }}" href="{{ route('reports.index') }}"><i class="bi bi-file-earmark-bar-graph me-2"></i>Laporan</a></li>
+                                    </ul>
+                                </li>
+                        @elseif(auth()->user()->role === 'cashier')
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('dashboard.cashier') ? 'active' : '' }}" href="{{ route('dashboard.cashier') }}">
+                                        <i class="bi bi-speedometer2 me-1"></i>Dashboard
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('orders.catalog') ? 'active' : '' }}" href="{{ route('orders.catalog') }}">
+                                        <i class="bi bi-grid me-1"></i>Katalog
+                                    </a>
+                                </li>
+                        @else
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('dashboard.user') ? 'active' : '' }}" href="{{ route('dashboard.user') }}">
+                                        <i class="bi bi-speedometer2 me-1"></i>Dashboard
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('shop.catalog') ? 'active' : '' }}" href="{{ route('shop.catalog') }}">
+                                        <i class="bi bi-bag me-1"></i>Belanja
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('cart.view') ? 'active' : '' }}" href="{{ route('cart.view') }}">
+                                        <i class="bi bi-cart3 me-1"></i>Keranjang
+                                    </a>
+                                </li>
+                        @endif
+                @endauth
+            </ul>
+            <ul class="navbar-nav ms-auto">
+                @guest
+                        <li class="nav-item"><a class="nav-link" href="{{ route('login') }}"><i class="bi bi-box-arrow-in-right me-1"></i>Login</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ route('register') }}"><i class="bi bi-person-plus me-1"></i>Register</a></li>
+                @else
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="d-inline-flex align-items-center justify-content-center rounded-circle" style="width:32px;height:32px;background:#f3f4f6;color:#111;font-weight:700;">
+                                    {{ strtoupper(mb_substr(auth()->user()->name,0,1)) }}
+                                </span>
+                                <span class="d-none d-lg-inline">{{ auth()->user()->name }}</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li class="px-3 py-2 small text-muted">Peran: {{ ucfirst(auth()->user()->role) }}</li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form method="POST" action="{{ route('logout') }}">@csrf
+                                        <button class="dropdown-item" type="submit"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                @endguest
+            </ul>
+        </div>
   </div>
 </nav>
 
-<main class="container">
+<main class="container-xl reveal py-3">
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
@@ -281,5 +334,12 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js"></script>
+<script src="/assets/js/ui.js"></script>
+<footer class="footer-elegant mt-5 py-3">
+    <div class="container-xl d-flex justify-content-between align-items-center">
+        <span>&copy; {{ date('Y') }} Kasir 40</span>
+        <span class="text-muted">Elegan • Sederhana • Rapi</span>
+    </div>
+</footer>
 </body>
 </html>

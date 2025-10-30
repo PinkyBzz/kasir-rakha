@@ -10,7 +10,7 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id','order_type','pickup_at','status','payment_status','subtotal','discount_total','grand_total','paid_at'
+        'user_id','order_type','pickup_at','status','payment_status','payment_method','subtotal','discount_total','grand_total','paid_at'
     ];
 
     protected $casts = [

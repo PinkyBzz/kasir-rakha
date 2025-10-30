@@ -14,7 +14,7 @@
 <div class="card fade-in">
   <div class="card-body p-0">
     <div class="table-responsive">
-      <table class="table table-hover mb-0">
+      <table class="table table-hover table-sm mb-0 align-middle">
         <thead>
           <tr>
             <th class="ps-4">SKU</th>
@@ -30,7 +30,7 @@
             <tr>
               <td class="ps-4"><span class="badge bg-secondary">{{ $p->sku }}</span></td>
               <td class="fw-semibold">{{ $p->name }}</td>
-              <td class="fw-bold text-success">Rp {{ number_format($p->price,0,',','.') }}</td>
+              <td class="fw-semibold">Rp {{ number_format($p->price,0,',','.') }}</td>
               <td>
                 @if($p->discount_type!='none')
                   <span class="badge bg-warning text-dark">
@@ -46,12 +46,12 @@
                 </span>
               </td>
               <td class="text-end pe-4">
-                <a href="{{ route('products.edit', $p) }}" class="btn btn-sm btn-warning me-1">
-                  <i class="bi bi-pencil-square"></i>
+                <a href="{{ route('products.edit', $p) }}" class="btn btn-sm btn-outline-secondary me-1" title="Edit">
+                  <i class="bi bi-pencil"></i>
                 </a>
                 <form action="{{ route('products.destroy', $p) }}" method="POST" class="d-inline">@csrf @method('DELETE')
-                  <button class="btn btn-sm btn-danger" onclick="return confirm('Hapus produk ini?')">
-                    <i class="bi bi-trash"></i>
+                  <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Hapus produk ini?')" title="Hapus">
+                    <i class="bi bi-trash3"></i>
                   </button>
                 </form>
               </td>

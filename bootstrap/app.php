@@ -10,6 +10,10 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
+    ->withSchedule(function (\Illuminate\Console\Scheduling\Schedule $schedule): void {
+        // Expire unpaid pickup orders past their pickup time every minute
+        $schedule->command('orders:expire')->everyMinute();
+    })
     ->withMiddleware(function (Middleware $middleware): void {
         // Register route middleware aliases
         $middleware->alias([

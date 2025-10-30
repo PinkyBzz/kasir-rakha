@@ -14,8 +14,8 @@
           <div class="text-muted mb-2" style="font-size: 0.9rem; font-weight: 500;">Total Produk</div>
           <div class="fs-2 fw-bold" style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">{{ $totalProducts }}</div>
         </div>
-        <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #667eea20, #764ba220); border-radius: 16px; display: flex; align-items: center; justify-content: center;">
-          <i class="bi bi-box-seam" style="font-size: 1.8rem; color: #667eea;"></i>
+        <div style="width: 60px; height: 60px; background: #f3f4f6; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+          <i class="bi bi-box-seam" style="font-size: 1.6rem; color: #525252;"></i>
         </div>
       </div>
       <div class="text-muted" style="font-size: 0.85rem;"><i class="bi bi-graph-up me-1"></i>Inventori aktif</div>
@@ -29,8 +29,8 @@
           <div class="text-muted mb-2" style="font-size: 0.9rem; font-weight: 500;">Penjualan Hari Ini</div>
           <div class="fs-2 fw-bold" style="background: var(--success-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Rp {{ number_format($todaySales,0,',','.') }}</div>
         </div>
-        <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #11998e20, #38ef7d20); border-radius: 16px; display: flex; align-items: center; justify-content: center;">
-          <i class="bi bi-cash-stack" style="font-size: 1.8rem; color: #11998e;"></i>
+        <div style="width: 60px; height: 60px; background: #f3f4f6; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+          <i class="bi bi-cash-stack" style="font-size: 1.6rem; color: #0f766e;"></i>
         </div>
       </div>
       <div class="text-muted" style="font-size: 0.85rem;"><i class="bi bi-calendar-check me-1"></i>Total hari ini</div>
@@ -44,8 +44,8 @@
           <div class="text-muted mb-2" style="font-size: 0.9rem; font-weight: 500;">Pickup Pending</div>
           <div class="fs-2 fw-bold" style="background: var(--warning-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">{{ $pendingPickups }}</div>
         </div>
-        <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #f093fb20, #f5576c20); border-radius: 16px; display: flex; align-items: center; justify-content: center;">
-          <i class="bi bi-clock-history" style="font-size: 1.8rem; color: #f5576c;"></i>
+        <div style="width: 60px; height: 60px; background: #f3f4f6; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+          <i class="bi bi-clock-history" style="font-size: 1.6rem; color: #92400e;"></i>
         </div>
       </div>
       <div class="text-muted" style="font-size: 0.85rem;"><i class="bi bi-hourglass-split me-1"></i>Menunggu pickup</div>
@@ -91,15 +91,15 @@ new Chart(ctx, {
       label: 'Penjualan (Rp)',
       data: {!! json_encode($data) !!},
       fill: true,
-      backgroundColor: 'rgba(102, 126, 234, 0.1)',
-      borderColor: 'rgb(102, 126, 234)',
-      borderWidth: 3,
+      backgroundColor: 'rgba(0,0,0,0.05)',
+      borderColor: '#4b5563',
+      borderWidth: 2,
       tension: 0.4,
-      pointBackgroundColor: 'rgb(102, 126, 234)',
+      pointBackgroundColor: '#4b5563',
       pointBorderColor: '#fff',
       pointBorderWidth: 2,
-      pointRadius: 5,
-      pointHoverRadius: 7
+      pointRadius: 4,
+      pointHoverRadius: 6
     }]
   },
   options: {

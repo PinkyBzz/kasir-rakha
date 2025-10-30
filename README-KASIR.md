@@ -9,6 +9,7 @@ Fitur utama:
   - User: belanja (di toko / ambil nanti), keranjang, checkout, riwayat + struk
 - Produk: diskon nominal/persen, upload gambar, pack template (pack_size, initial_packs -> stok otomatis)
 - Order: struk print, expired otomatis jika ambil-nanti melewati jam & belum dibayar (via command)
+- Pembayaran: metode Cash, Transfer bank, dan QRIS (tanpa tampilan QR). Ubah detail rekening di tampilan checkout jika diperlukan.
 - Laporan: pemasukan, pengeluaran, keuntungan bersih, download PDF (weekly/bulanan)
 
 ## Setup
@@ -53,9 +54,25 @@ Akses: http://127.0.0.1:8000
 
 ## Expire Otomatis (Ambil Nanti)
 - Command: `php artisan orders:expire` akan menandai order ambil-nanti yang melewati `pickup_at` dengan status `expired` (tidak dihitung di laporan).
-- Di Windows (Task Scheduler): buat task tiap 5 menit menjalankan:
+- Scheduler Laravel sudah diaktifkan di `bootstrap/app.php` untuk menjalankan per menit.
+
+Pilihan cara menjalankan scheduler di Windows:
+
+1) Jalankan sebagai proses background (mudah saat dev):
 ```
-php C:\xampp\htdocs\kasir\laravel\artisan orders:expire
+php artisan schedule:work
+```
+
+2) Pakai Task Scheduler (untuk produksi di Windows):
+  - Action: Start a Program
+  - Program/script: `C:\xampp\php\php.exe`
+  - Add arguments: `artisan schedule:run --verbose`
+  - Start in (optional): `C:\xampp\htdocs\kasir`
+  - Trigger: Every 1 minute
+
+Catatan: Jika ingin langsung paksa expire tanpa menunggu 1 menit, jalankan manual:
+```
+php artisan orders:expire
 ```
 
 ## Cetak Struk
