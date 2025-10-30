@@ -1,0 +1,66 @@
+@extends('layouts.app')
+
+@section('content')
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="fw-bold mb-1"><i class="bi bi-box-seam me-2"></i>Kelola Produk</h2>
+    <p class="text-muted mb-0">Manajemen inventori dan stok</p>
+  </div>
+  <a href="{{ route('products.create') }}" class="btn btn-primary">
+    <i class="bi bi-plus-circle me-2"></i>Tambah Produk
+  </a>
+</div>
+
+<div class="card fade-in">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th class="ps-4">SKU</th>
+            <th>Nama</th>
+            <th>Harga</th>
+            <th>Diskon</th>
+            <th>Stok</th>
+            <th class="text-end pe-4">Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach($products as $p)
+            <tr>
+              <td class="ps-4"><span class="badge bg-secondary">{{ $p->sku }}</span></td>
+              <td class="fw-semibold">{{ $p->name }}</td>
+              <td class="fw-bold text-success">Rp {{ number_format($p->price,0,',','.') }}</td>
+              <td>
+                @if($p->discount_type!='none')
+                  <span class="badge bg-warning text-dark">
+                    {{ $p->discount_type=='percent' ? $p->discount_value.'%' : 'Rp '.number_format($p->discount_value,0,',','.') }}
+                  </span>
+                @else
+                  <span class="text-muted">-</span>
+                @endif
+              </td>
+              <td>
+                <span class="badge bg-{{ $p->stock > 10 ? 'success' : ($p->stock > 0 ? 'warning' : 'danger') }}">
+                  {{ $p->stock }} pcs
+                </span>
+              </td>
+              <td class="text-end pe-4">
+                <a href="{{ route('products.edit', $p) }}" class="btn btn-sm btn-warning me-1">
+                  <i class="bi bi-pencil-square"></i>
+                </a>
+                <form action="{{ route('products.destroy', $p) }}" method="POST" class="d-inline">@csrf @method('DELETE')
+                  <button class="btn btn-sm btn-danger" onclick="return confirm('Hapus produk ini?')">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </form>
+              </td>
+            </tr>
+          @endforeach
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="mt-3">{{ $products->links() }}</div>
+@endsection
