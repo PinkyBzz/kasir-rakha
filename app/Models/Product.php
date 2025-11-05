@@ -4,17 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'name','sku','description','price','stock','pack_size','pack_label','discount_type','discount_value','image_path'
+        'name','sku','description','price','cost_price','stock','pack_size','pack_label','discount_type','discount_value','image_path'
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
+        'cost_price' => 'decimal:2',
         'discount_value' => 'decimal:2',
     ];
 

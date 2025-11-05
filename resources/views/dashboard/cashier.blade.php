@@ -4,14 +4,14 @@
 <div class="mb-4">
   <h2 class="fw-bold mb-1"><i class="bi bi-grid me-2"></i>Dashboard Kasir</h2>
   <p class="text-muted">Katalog Produk & Pesanan</p>
-</div>
+  </div>
 
 <div class="row row-cols-1 row-cols-md-4 g-4 mb-5">
   @foreach($products as $p)
   <div class="col">
     <div class="card product-card h-100">
       <div style="position: relative; overflow: hidden; border-radius: 16px 16px 0 0;">
-        <img src="{{ $p->image_path ? asset('storage/'.$p->image_path) : 'https://via.placeholder.com/300x200?text=No+Image' }}" class="card-img-top" alt="{{ $p->name }}">
+        <img src="{{ $p->image_path ? route('media.show', ['path' => $p->image_path]) : 'https://via.placeholder.com/300x200?text=No+Image' }}" class="card-img-top" alt="{{ $p->name }}">
         @if($p->discount_type!='none')
           <span class="badge bg-danger position-absolute top-0 end-0 m-2" style="font-size: 0.75rem; padding: 0.4rem 0.8rem;">
             <i class="bi bi-percent me-1"></i>DISKON

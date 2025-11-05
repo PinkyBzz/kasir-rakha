@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\MediaController;
 
 // Auth
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
@@ -18,11 +19,21 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Home -> role-based redirect
 Route::get('/', [DashboardController::class, 'redirectByRole'])->name('dashboard.redirect');
 
+// Media proxy for public storage (bypass OS symlink requirements)
+Route::get('/media/{path}', [MediaController::class, 'show'])->where('path', '.*')->name('media.show');
+
 // Dashboards
+// Shared product abilities: admin + cashier dapat melihat, menambah, mengedit, dan menghapus produk
+Route::middleware(['auth', 'role:admin,cashier'])->group(function () {
+    Route::resource('products', ProductController::class)->only(['index','create','store','edit','update','destroy']);
+    Route::get('products/{product}/stock-in', [ProductController::class, 'stockForm'])->name('products.stock.form');
+    Route::post('products/{product}/stock-in', [ProductController::class, 'stockIn'])->name('products.stock.store');
+});
+
+// Admin-only area
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin', [DashboardController::class, 'admin'])->name('dashboard.admin');
-    // Manage products
-    Route::resource('products', ProductController::class);
+    // (produk destroy sudah di-share di grup admin+cashier)
     // Reports
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
     Route::get('/reports/download', [ReportController::class, 'downloadPdf'])->name('reports.download');
@@ -44,6 +55,8 @@ Route::middleware(['auth', 'role:admin,cashier,user'])->group(function () {
     Route::get('/shop', [OrderController::class, 'catalog'])->name('shop.catalog');
     Route::post('/cart/add/{product}', [OrderController::class, 'addToCart'])->name('cart.add');
     Route::get('/cart', [OrderController::class, 'cart'])->name('cart.view');
+    Route::post('/cart/update/{product}', [OrderController::class, 'updateCart'])->name('cart.update');
+    Route::post('/cart/clear', [OrderController::class, 'clearCart'])->name('cart.clear');
     Route::get('/checkout', [OrderController::class, 'checkoutForm'])->name('checkout.form');
     Route::post('/checkout', [OrderController::class, 'checkout'])->name('checkout.process');
     Route::get('/orders/{order}/receipt', [OrderController::class, 'receipt'])->name('orders.receipt');

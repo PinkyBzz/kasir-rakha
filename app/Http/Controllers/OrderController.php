@@ -33,6 +33,37 @@ class OrderController extends Controller
         return view('orders.cart', compact('products','cart'));
     }
 
+    public function updateCart(Request $request, Product $product)
+    {
+        $data = $request->validate([
+            'qty' => 'required|integer|min:0'
+        ]);
+        $cart = session('cart', []);
+        if (!array_key_exists($product->id, $cart)) {
+            return back()->with('warning', 'Produk tidak ada di keranjang.');
+        }
+        $qty = (int)$data['qty'];
+        if ($qty === 0) {
+            unset($cart[$product->id]);
+        } else {
+            // Optional: clamp to current stock
+            $max = max(0, (int)$product->stock);
+            if ($max > 0 && $qty > $max) {
+                $qty = $max;
+                $msg = 'Jumlah melebihi stok, disesuaikan ke '.$max.'.';
+            }
+            $cart[$product->id] = $qty;
+        }
+        session(['cart' => $cart]);
+        return back()->with(isset($msg)?'warning':'success', isset($msg)?$msg:'Keranjang diperbarui.');
+    }
+
+    public function clearCart()
+    {
+        session()->forget('cart');
+        return back()->with('success','Keranjang dikosongkan.');
+    }
+
     public function checkoutForm()
     {
         $cart = session('cart', []);

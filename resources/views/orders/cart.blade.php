@@ -26,6 +26,7 @@
             <tr>
               <th class="ps-4">Produk</th>
               <th class="text-center">Qty</th>
+              <th class="text-center">Aksi</th>
               <th class="text-end">Harga Satuan</th>
               <th class="text-end pe-4">Total</th>
             </tr>
@@ -41,7 +42,7 @@
                 <td class="ps-4">
                   <div class="d-flex align-items-center">
                     <div class="me-3" style="width: 60px; height: 60px; background: #f8f9fa; border-radius: 12px; overflow: hidden;">
-                      <img src="{{ $p->image_path ? asset('storage/'.$p->image_path) : 'https://via.placeholder.com/60' }}" style="width: 100%; height: 100%; object-fit: cover;">
+                      <img src="{{ $p->image_path ? route('media.show', ['path' => $p->image_path]) : 'https://via.placeholder.com/60' }}" style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
                     <div>
                       <div class="fw-semibold">{{ $p->name }}</div>
@@ -52,7 +53,17 @@
                   </div>
                 </td>
                 <td class="text-center align-middle">
-                  <span class="badge bg-dark" style="font-size: .9rem; padding: .4rem .8rem;">{{ $qty }}</span>
+                  <form method="POST" action="{{ route('cart.update', $p) }}" class="cart-update d-inline-flex align-items-center justify-content-center gap-2">@csrf
+                    <button type="button" class="btn btn-sm btn-outline-secondary btn-dec" title="Kurangi"><i class="bi bi-dash"></i></button>
+                    <input type="number" name="qty" min="0" value="{{ $qty }}" class="form-control form-control-sm qty-input" style="width:80px">
+                    <button type="button" class="btn btn-sm btn-outline-secondary btn-inc" title="Tambah"><i class="bi bi-plus"></i></button>
+                  </form>
+                </td>
+                <td class="text-center align-middle">
+                  <form method="POST" action="{{ route('cart.update', $p) }}" onsubmit="return confirm('Hapus item ini dari keranjang?')" class="d-inline">@csrf
+                    <input type="hidden" name="qty" value="0">
+                    <button class="btn btn-sm btn-outline-danger" title="Hapus"><i class="bi bi-trash3"></i></button>
+                  </form>
                 </td>
                 <td class="text-end align-middle fw-semibold">Rp {{ number_format($unit,0,',','.') }}</td>
                 <td class="text-end pe-4 align-middle fw-bold" style="font-size: 1.05rem; color:#0f766e;">Rp {{ number_format($total,0,',','.') }}</td>
@@ -70,8 +81,44 @@
     </div>
   </div>
   
-  <div class="text-end">
+  <div class="d-flex justify-content-between">
+    <form method="POST" action="{{ route('cart.clear') }}" onsubmit="return confirm('Kosongkan seluruh keranjang?')">@csrf
+      <button class="btn btn-outline-danger"><i class="bi bi-trash me-2"></i>Kosongkan Keranjang</button>
+    </form>
     <a class="btn btn-success px-4 py-2" href="{{ route('checkout.form') }}"><i class="bi bi-credit-card me-2"></i>Lanjut ke Checkout</a>
   </div>
 @endif
 @endsection
+
+@push('scripts')
+<script>
+  (function(){
+    const tokenEl = document.querySelector('meta[name="csrf-token"]');
+    const csrf = tokenEl ? tokenEl.getAttribute('content') : '';
+    function submitForm(form){
+      const fd = new FormData(form);
+      fetch(form.action, {
+        method: 'POST',
+        headers: { 'X-CSRF-TOKEN': csrf },
+        body: fd
+      }).then(resp => {
+        if (!resp.ok) throw new Error('Request failed');
+        return resp.text();
+      }).then(() => {
+        location.reload();
+      }).catch(() => {
+        // fallback: normal submit
+        form.submit();
+      });
+    }
+    document.querySelectorAll('form.cart-update').forEach(form => {
+      const input = form.querySelector('.qty-input');
+      const inc = form.querySelector('.btn-inc');
+      const dec = form.querySelector('.btn-dec');
+      if (inc) inc.addEventListener('click', () => { input.stepUp(); submitForm(form); });
+      if (dec) dec.addEventListener('click', () => { input.stepDown(); submitForm(form); });
+      if (input) input.addEventListener('change', () => submitForm(form));
+    });
+  })();
+</script>
+@endpush

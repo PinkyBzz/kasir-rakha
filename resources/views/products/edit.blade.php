@@ -15,15 +15,15 @@
       <input type="text" name="sku" class="form-control" value="{{ old('sku', $product->sku) }}" required>
     </div>
     <div class="col-md-3">
-      <label class="form-label">Harga</label>
+      <label class="form-label">Harga Jual (Rp/pcs)</label>
       <input type="number" name="price" class="form-control" min="0" step="0.01" value="{{ old('price', $product->price) }}" required>
     </div>
     <div class="col-md-3">
-      <label class="form-label">Ukuran Pack</label>
+      <label class="form-label">Jumlah pcs dalam satu pack</label>
       <input type="number" name="pack_size" class="form-control" min="1" value="{{ old('pack_size', $product->pack_size) }}" required>
     </div>
     <div class="col-md-3">
-      <label class="form-label">Label Pack</label>
+      <label class="form-label">Jenis Pack</label>
       <input type="text" name="pack_label" class="form-control" value="{{ old('pack_label', $product->pack_label) }}" required>
     </div>
     <div class="col-md-3">
@@ -42,7 +42,7 @@
       <label class="form-label">Gambar</label>
       <input type="file" name="image" class="form-control">
       @if($product->image_path)
-        <img src="{{ asset('storage/'.$product->image_path) }}" class="mt-2" style="max-height:120px;">
+        <img src="{{ route('media.show', ['path' => $product->image_path]) }}" class="mt-2" style="max-height:120px;">
       @endif
     </div>
     <div class="col-12">

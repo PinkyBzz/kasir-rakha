@@ -81,42 +81,51 @@
   </div>
 </div></div>
 
+@push('scripts')
 <script>
-const ctx = document.getElementById('salesChart');
-new Chart(ctx, {
-  type: 'line',
-  data: {
-    labels: {!! json_encode($labels) !!},
-    datasets: [{
-      label: 'Penjualan (Rp)',
-      data: {!! json_encode($data) !!},
-      fill: true,
-      backgroundColor: 'rgba(0,0,0,0.05)',
-      borderColor: '#4b5563',
-      borderWidth: 2,
-      tension: 0.4,
-      pointBackgroundColor: '#4b5563',
-      pointBorderColor: '#fff',
-      pointBorderWidth: 2,
-      pointRadius: 4,
-      pointHoverRadius: 6
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: { display: true, position: 'top' },
-      tooltip: { 
-        backgroundColor: 'rgba(0,0,0,0.8)',
-        padding: 12,
-        cornerRadius: 8
-      }
-    },
-    scales: {
-      y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
-      x: { grid: { display: false } }
+  (function initSalesChart(){
+    const el = document.getElementById('salesChart');
+    if (!el || typeof Chart === 'undefined') {
+      // Try again after load if Chart.js not ready yet
+      window.addEventListener('load', initSalesChart, { once: true });
+      return;
     }
-  }
-});
+    new Chart(el, {
+      type: 'line',
+      data: {
+  labels: @json($labels),
+        datasets: [{
+          label: 'Penjualan (Rp)',
+          data: @json($data),
+          fill: true,
+          backgroundColor: 'rgba(0,0,0,0.05)',
+          borderColor: '#4b5563',
+          borderWidth: 2,
+          tension: 0.4,
+          pointBackgroundColor: '#4b5563',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          pointRadius: 4,
+          pointHoverRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: true, position: 'top' },
+          tooltip: {
+            backgroundColor: 'rgba(0,0,0,0.8)',
+            padding: 12,
+            cornerRadius: 8
+          }
+        },
+        scales: {
+          y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+  })();
 </script>
+@endpush
 @endsection

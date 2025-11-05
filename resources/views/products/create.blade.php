@@ -17,25 +17,35 @@
               <input type="text" name="sku" class="form-control" placeholder="AM600" required>
             </div>
             <div class="col-md-3">
-              <label class="form-label fw-semibold"><i class="bi bi-cash me-2"></i>Harga (Rp)</label>
+              <label class="form-label fw-semibold"><i class="bi bi-cash me-2"></i>Harga Jual (Rp/pcs)</label>
               <input type="number" name="price" class="form-control" min="0" step="0.01" placeholder="5000" required>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold"><i class="bi bi-currency-dollar me-2"></i>Harga Modal (Rp/pcs)</label>
+              <input type="number" name="cost_price" class="form-control" min="0" step="0.01" placeholder="4000" required>
             </div>
             
             <div class="col-12"><hr></div>
             
             <div class="col-md-3">
-              <label class="form-label fw-semibold"><i class="bi bi-boxes me-2"></i>Ukuran Pack</label>
+              <label class="form-label fw-semibold"><i class="bi bi-boxes me-2"></i>Jumlah pcs dalam satu pack</label>
               <input type="number" name="pack_size" class="form-control" min="1" value="1" required>
-              <small class="text-muted">Contoh: 12 pcs per kardus</small>
+              <small class="text-muted">Misal: 12</small>
             </div>
             <div class="col-md-3">
-              <label class="form-label fw-semibold">Label Pack</label>
+              <label class="form-label fw-semibold">Jenis Pack</label>
               <input type="text" name="pack_label" class="form-control" value="pcs" required>
+              <small class="text-muted">Contoh: pcs/box/kardus</small>
             </div>
             <div class="col-md-3">
               <label class="form-label fw-semibold"><i class="bi bi-stack me-2"></i>Jumlah Pack Awal</label>
               <input type="number" name="initial_packs" class="form-control" min="0" value="0" placeholder="10">
-              <small class="text-muted">Stok = pack × ukuran</small>
+              <small class="text-muted">Stok = pack × pcs/pack</small>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold"><i class="bi bi-123 me-2"></i>Tambah Pcs Awal</label>
+              <input type="number" name="initial_pcs" class="form-control" min="0" value="0" placeholder="0">
+              <small class="text-muted">Opsional — bisa isi salah satu atau keduanya</small>
             </div>
             
             <div class="col-12"><hr></div>
