@@ -224,6 +224,7 @@
     </style>
     <link href="/assets/css/modern-compact.css" rel="stylesheet">
     <link href="/assets/css/theme-elegant.css" rel="stylesheet">
+    @stack('styles')
 </head>
 <body class="compact-theme elegant-theme">
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top compact">
@@ -251,9 +252,20 @@
                                     <ul class="dropdown-menu" aria-labelledby="kelolaDropdown">
                                         <li><a class="dropdown-item {{ request()->routeIs('products.*') ? 'active' : '' }}" href="{{ route('products.index') }}"><i class="bi bi-box-seam me-2"></i>Produk</a></li>
                                         <li><a class="dropdown-item {{ request()->routeIs('expenses.*') ? 'active' : '' }}" href="{{ route('expenses.index') }}"><i class="bi bi-cash-coin me-2"></i>Pengeluaran</a></li>
+                                        <li><a class="dropdown-item {{ request()->routeIs('users.*') ? 'active' : '' }}" href="{{ route('users.index') }}"><i class="bi bi-people me-2"></i>Pengguna</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li><a class="dropdown-item {{ request()->routeIs('reports.*') ? 'active' : '' }}" href="{{ route('reports.index') }}"><i class="bi bi-file-earmark-bar-graph me-2"></i>Laporan</a></li>
                                     </ul>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('orders.catalog') || request()->routeIs('shop.catalog') ? 'active' : '' }}" href="{{ route('shop.catalog') }}">
+                                        <i class="bi bi-grid me-1"></i>Katalog
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('cart.view') ? 'active' : '' }}" href="{{ route('cart.view') }}">
+                                        <i class="bi bi-cart3 me-1"></i>Keranjang
+                                    </a>
                                 </li>
                         @elseif(auth()->user()->role === 'cashier')
                                 <li class="nav-item">

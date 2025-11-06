@@ -68,9 +68,18 @@
           <span class="text-muted ms-2">{{ $o->order_type==='pickup_later'?'Ambil Nanti':'Di Toko' }}</span>
           <span class="ms-2 text-muted">Rp {{ number_format($o->grand_total,0,',','.') }}</span>
         </div>
-        <span class="badge bg-{{ $o->payment_status==='paid'?'success':'warning' }} text-uppercase">
-          <i class="bi bi-{{ $o->payment_status==='paid'?'check-circle':'clock' }} me-1"></i>{{ $o->payment_status }}
-        </span>
+        @if($o->payment_status !== 'paid')
+          <form method="POST" action="{{ route('orders.markPaid', $o) }}" class="d-flex align-items-center gap-2">@csrf
+            <select name="payment_method" class="form-select form-select-sm" style="width:auto;">
+              <option value="cash" {{ $o->payment_method==='cash'?'selected':'' }}>Cash</option>
+              <option value="transfer" {{ $o->payment_method==='transfer'?'selected':'' }}>Transfer</option>
+              <option value="qris" {{ $o->payment_method==='qris'?'selected':'' }}>QRIS</option>
+            </select>
+            <button class="btn btn-sm btn-success"><i class="bi bi-check-circle me-1"></i>Konfirmasi</button>
+          </form>
+        @else
+          <span class="badge bg-success text-uppercase"><i class="bi bi-check-circle me-1"></i>paid</span>
+        @endif
       </div>
     @empty
       <div class="text-center text-muted py-4">
@@ -128,4 +137,6 @@
   })();
 </script>
 @endpush
+
+@include('components.floating_cart')
 @endsection

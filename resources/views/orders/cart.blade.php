@@ -6,6 +6,21 @@
   <p class="text-muted">Review pembelian Anda sebelum checkout</p>
 </div>
 
+{{-- Scan Bar (SKU/Barcode) --}}
+<div class="alert alert-light d-flex align-items-center justify-content-between" style="border:1px dashed var(--e-border); border-radius: 14px;">
+  <div class="d-flex align-items-center gap-2">
+    <span class="badge bg-primary"><i class="bi bi-upc-scan me-1"></i> Mode Scan</span>
+    <small class="text-muted">Arahkan kursor ke halaman ini dan scan barcode (scanner USB) — tekan Enter di akhir.</small>
+  </div>
+  <div class="text-end">
+    <small class="text-muted">Fokus otomatis aktif</small>
+  </div>
+  <input id="scan-input" type="text" autocomplete="off" inputmode="none" style="position: absolute; opacity: 0; width: 1px; height: 1px; left: -9999px;" />
+  <audio id="beep-ok" preload="auto">
+    <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABYAAAABAAgAZGF0YQAAAAA=" type="audio/wav">
+  </audio>
+</div>
+
 @if(empty($cart))
   <div class="card fade-in">
     <div class="card-body text-center py-5">
@@ -119,6 +134,82 @@
       if (dec) dec.addEventListener('click', () => { input.stepDown(); submitForm(form); });
       if (input) input.addEventListener('change', () => submitForm(form));
     });
+  })();
+</script>
+
+<script>
+  // Simple scan handler: captures fast-typed code ending with Enter from USB scanner
+  (function(){
+    const input = document.getElementById('scan-input');
+    const ok = document.getElementById('beep-ok');
+    const tokenEl = document.querySelector('meta[name="csrf-token"]');
+    const csrf = tokenEl ? tokenEl.getAttribute('content') : '';
+
+    function focusScan(){
+      if (input) input.focus();
+    }
+    // Keep focus on hidden input
+    document.addEventListener('click', focusScan);
+    document.addEventListener('keydown', function(){
+      // If user starts typing, ensure input focused to capture scanner stream
+      if (document.activeElement !== input) focusScan();
+    });
+    window.addEventListener('load', focusScan);
+
+    if (!input) return;
+    input.addEventListener('keydown', function(e){
+      if (e.key === 'Enter'){
+        e.preventDefault();
+        const code = input.value.trim();
+        if (!code) return;
+        // Submit via fetch to scan endpoint
+        fetch("{{ route('cart.scan') }}", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrf,
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ code })
+        }).then(async (resp) => {
+          const data = await resp.json().catch(()=>({}));
+          if (!resp.ok || !data.ok){
+            const msg = (data && data.message) ? data.message : 'Kode tidak dikenal';
+            showScanToast(msg, 'danger');
+            return;
+          }
+          if (ok && ok.play) { try { ok.currentTime = 0; ok.play(); } catch(_){} }
+          showScanToast('Ditambahkan: ' + data.product.name + ' (SKU: ' + data.product.sku + ')', 'success');
+          // Refresh numbers silently
+          setTimeout(() => location.reload(), 300);
+        }).catch(() => {
+          showScanToast('Gagal kirim kode', 'danger');
+        }).finally(() => {
+          input.value = '';
+          focusScan();
+        });
+      }
+    });
+
+    // Minimal toast
+    function showScanToast(message, type){
+      let toast = document.getElementById('scan-toast');
+      if (!toast){
+        toast = document.createElement('div');
+        toast.id = 'scan-toast';
+        toast.style.position = 'fixed';
+        toast.style.right = '16px';
+        toast.style.bottom = '16px';
+        toast.style.zIndex = '1080';
+        document.body.appendChild(toast);
+      }
+      const el = document.createElement('div');
+      el.className = 'alert alert-' + (type || 'info') + ' shadow-sm mb-2';
+      el.style.minWidth = '260px';
+      el.innerHTML = '<i class="bi bi-upc-scan me-2"></i>' + message;
+      toast.appendChild(el);
+      setTimeout(() => { el.remove(); }, 2200);
+    }
   })();
 </script>
 @endpush

@@ -11,10 +11,21 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
-    public function catalog()
+    public function catalog(Request $request)
     {
-        $products = Product::orderBy('name')->paginate(24);
-        return view('orders.catalog', compact('products'));
+        $q = trim((string)$request->query('q', ''));
+        $products = Product::query()
+            ->when($q !== '', function ($query) use ($q) {
+                $query->where(function($sub) use ($q){
+                    $sub->where('name', 'like', "%{$q}%")
+                        ->orWhere('sku', 'like', "%{$q}%")
+                        ->orWhere('description', 'like', "%{$q}%");
+                });
+            })
+            ->orderBy('name')
+            ->paginate(24)
+            ->withQueryString();
+        return view('orders.catalog', compact('products', 'q'));
     }
 
     public function addToCart(Request $request, Product $product)
@@ -64,10 +75,67 @@ class OrderController extends Controller
         return back()->with('success','Keranjang dikosongkan.');
     }
 
+    /**
+     * Scan barcode/SKU and add item to cart (AJAX JSON).
+     * Accepts any USB barcode scanner that types the code then sends Enter.
+     * Current implementation matches Product by SKU. Optional future: product_barcodes table.
+     */
+    public function scanAdd(Request $request)
+    {
+        $data = $request->validate([
+            'code' => 'required|string|max:128'
+        ]);
+        $code = trim($data['code']);
+        if ($code === '') {
+            return response()->json(['ok' => false, 'message' => 'Kode kosong'], 422);
+        }
+
+        // Try match by SKU first
+        $product = Product::where('sku', $code)->first();
+
+        // Optional: try removing leading zeros or spaces if scanner pads EAN/UPC
+        if (!$product) {
+            $normalized = ltrim($code, '0 ');
+            if ($normalized !== '' && $normalized !== $code) {
+                $product = Product::where('sku', $normalized)->first();
+            }
+        }
+
+        if (!$product) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Produk dengan kode tersebut tidak ditemukan',
+            ], 404);
+        }
+
+        // Update session cart (increment 1), clamp to stock if needed
+        $cart = session('cart', []);
+        $current = (int)($cart[$product->id] ?? 0);
+        $newQty = $current + 1;
+        $max = max(0, (int)$product->stock);
+        if ($max > 0 && $newQty > $max) {
+            $newQty = $max;
+        }
+        $cart[$product->id] = $newQty;
+        session(['cart' => $cart]);
+
+        return response()->json([
+            'ok' => true,
+            'product' => [
+                'id' => $product->id,
+                'name' => $product->name,
+                'sku' => $product->sku,
+            ],
+            'qty' => $newQty,
+            'stock' => (int)$product->stock,
+            'message' => 'Ditambahkan: '.$product->name,
+        ]);
+    }
+
     public function checkoutForm()
     {
         $cart = session('cart', []);
-        if (empty($cart)) return redirect()->route('orders.catalog')->with('warning','Keranjang kosong.');
+        if (empty($cart)) return redirect()->route('shop.catalog')->with('warning','Keranjang kosong.');
         return view('orders.checkout');
     }
 
@@ -79,7 +147,7 @@ class OrderController extends Controller
             'payment_method' => 'required|in:cash,transfer,qris',
         ]);
         $cart = session('cart', []);
-        if (empty($cart)) return redirect()->route('orders.catalog');
+    if (empty($cart)) return redirect()->route('shop.catalog');
 
         $userId = Auth::id();
         DB::transaction(function () use ($request, $cart, $userId, &$order) {
@@ -147,7 +215,7 @@ class OrderController extends Controller
 
     public function markPaid(Request $request, Order $order)
     {
-        if (!in_array(auth()->user()->role, ['admin','cashier'], true)) abort(403);
+    if (!in_array(Auth::user()->role, ['admin','cashier'], true)) abort(403);
         if ($order->payment_status !== 'paid') {
             $method = $request->input('payment_method');
             $update = [
@@ -165,7 +233,7 @@ class OrderController extends Controller
 
     private function authorizeOrder(Order $order): void
     {
-        $user = auth()->user();
+    $user = Auth::user();
         if ($user->role === 'user' && $order->user_id !== $user->id) {
             abort(403);
         }

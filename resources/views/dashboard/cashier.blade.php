@@ -75,4 +75,6 @@
     </div>
   </div>
 </div>
+
+@include('components.floating_cart')
 @endsection

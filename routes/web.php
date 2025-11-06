@@ -39,13 +39,23 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/reports/download', [ReportController::class, 'downloadPdf'])->name('reports.download');
     // Expenses
     Route::resource('expenses', ExpenseController::class)->only(['index','create','store','destroy']);
+
+    // User management (admin only)
+    Route::resource('users', \App\Http\Controllers\UserManagementController::class)
+        ->only(['index','create','store','edit','update','destroy'])
+        ->parameters(['users' => 'user']);
+    Route::post('users/{user}/reset-password', [\App\Http\Controllers\UserManagementController::class, 'resetPassword'])
+        ->name('users.reset');
 });
 
 Route::middleware(['auth', 'role:cashier'])->group(function () {
     Route::get('/cashier', [DashboardController::class, 'cashier'])->name('dashboard.cashier');
     // Product lookup/catalog
     Route::get('/orders/catalog', [OrderController::class, 'catalog'])->name('orders.catalog');
-    // Mark paid
+});
+
+// Admin + Cashier can confirm payments
+Route::middleware(['auth', 'role:admin,cashier'])->group(function () {
     Route::post('/orders/{order}/paid', [OrderController::class, 'markPaid'])->name('orders.markPaid');
 });
 
@@ -56,6 +66,8 @@ Route::middleware(['auth', 'role:admin,cashier,user'])->group(function () {
     Route::post('/cart/add/{product}', [OrderController::class, 'addToCart'])->name('cart.add');
     Route::get('/cart', [OrderController::class, 'cart'])->name('cart.view');
     Route::post('/cart/update/{product}', [OrderController::class, 'updateCart'])->name('cart.update');
+    // Scan barcode/SKU to add to cart
+    Route::post('/cart/scan', [OrderController::class, 'scanAdd'])->name('cart.scan');
     Route::post('/cart/clear', [OrderController::class, 'clearCart'])->name('cart.clear');
     Route::get('/checkout', [OrderController::class, 'checkoutForm'])->name('checkout.form');
     Route::post('/checkout', [OrderController::class, 'checkout'])->name('checkout.process');
