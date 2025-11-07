@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
@@ -16,8 +17,15 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Home -> role-based redirect
-Route::get('/', [DashboardController::class, 'redirectByRole'])->name('dashboard.redirect');
+// Landing page (default homepage) — show only for guests
+Route::get('/', function(){
+    if (Auth::check()) {
+        return redirect()->route('dashboard.redirect');
+    }
+    return view('landing');
+})->name('landing');
+// Role-based redirect homepage for authenticated users
+Route::get('/home', [DashboardController::class, 'redirectByRole'])->name('dashboard.redirect');
 
 // Media proxy for public storage (bypass OS symlink requirements)
 Route::get('/media/{path}', [MediaController::class, 'show'])->where('path', '.*')->name('media.show');

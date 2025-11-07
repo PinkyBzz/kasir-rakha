@@ -229,7 +229,7 @@
 <body class="compact-theme elegant-theme">
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top compact">
   <div class="container">
-    <a class="navbar-brand" href="{{ route('dashboard.redirect') }}">
+    <a class="navbar-brand" href="{{ auth()->check() ? route('dashboard.redirect') : route('landing') }}">
     <i class="bi bi-shop me-2"></i>Kasir 40
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample" aria-controls="navbarsExample" aria-expanded="false" aria-label="Toggle navigation">
